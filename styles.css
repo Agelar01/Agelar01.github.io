@@ -18,7 +18,7 @@ body {
     flex-wrap: wrap;
     flex-flow: column;
     background-color: wheat;
-    background-image: url('assets/orange.webp');
+    background-image: url('/assets/orange.webp');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
