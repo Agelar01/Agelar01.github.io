@@ -69,11 +69,12 @@ document.addEventListener("DOMContentLoaded", () => {
   iconsGrid.classList.add("icons-grid");
 
   const icons = [
+    { id: "browser", text: "Browser", className: "fa-solid fa-globe fa" },
     { id: "game", text: "Game", className: "fa-solid fa-gamepad fa" },
-    { id: "about-me", text: "About me", className: "fa-solid fa-id-card fa" },
     { id: "terminal", text: "Terminal", className: "fa-solid fa-terminal fa" },
     { id: "calculator", text: "Maths", className: "fa-solid fa-calculator fa" },
-    { id: "browser", text: "Browser", className: "fa-solid fa-globe fa" }
+    { id: "about", text: "About", className: "fa-solid fa-frog fa" },
+    { id: "to-do", text: "To Do", className: "fa-solid fa-list-alt fa" }
   ];
 
   icons.forEach(({ id, text, className }) => {
@@ -483,7 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
         flexGrow: "1"
       });
 
-
+      
 
       browser.appendChild(webContent);
 
@@ -758,7 +759,51 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       createParagraph("Type 'help' for a list of commands");
     }
+    // About
+
+    if (programGiven == "About") {
+      const about = document.getElementById(windowDiv.id);
+      about.classList.add("about-window");
+      const text1 = document.createElement("p");
+      text1.classList.add("about-text");
+      const title1 = document.createElement("h2");
+      title1.textContent = "FrogOs";
+      title1.classList.add("title1");
+      const title2 = document.createElement("h2");
+      title2.textContent = "About me";
+      title2.classList.add("title1");
+      const text2 = document.createElement("p");
+      text2.classList.add("about-text");
+      text2.textContent = "My name is Antú Eyaralar, im a former Computer Science student, im passionate about learning and solving problems.";
+      text1.textContent = "Hi! Welcome to my portfolio. FrogOs is a little proyect i made inspired in my Linux desktop in order to put in practice some basics of HTML,CSS and JavaScript and thats the main reason why i avoided using frameworks.\n As you can see its a work in progress and its full of things to fix, feel free to let me know of any bugs and things to improve!";
+      about.appendChild(title1);
+      about.appendChild(text1);
+      about.appendChild(title2);
+      about.appendChild(text2);
+
+    }
+
+    //To Do
+
+    if (programGiven == "To Do") {
+      const toDo = document.getElementById(windowDiv.id);
+      toDo.classList.add("todo-window");
+      const list = document.createElement("ul");
+      list.classList.add("todo-list");
+      const items = ["Make a functional 'To do' list", "Fix right click interactions and add customizable ui",
+       "Fix browser buttons","Add keyboard to the Calculator","Add wallpapers", "Add videogame"];
+
+      items.forEach(text => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        list.appendChild(li);
+      });
+
+      toDo.appendChild(list);
+    }
   }
+
+
 
 
 
@@ -806,7 +851,7 @@ document.addEventListener("DOMContentLoaded", () => {
       displayedMenu = document.createElement("div");
       displayedMenu.classList.add("displayed-menu");
       e.stopPropagation();
-      
+
 
       icons.forEach(({ id, text, className }) => {
         const iconHmenu = document.createElement("div");

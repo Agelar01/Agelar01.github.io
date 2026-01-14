@@ -288,6 +288,45 @@ span {
     flex-direction: column;
 }
 
+/* About */
+
+.about-window {
+    background-color: rgba(78, 25, 83, 0.9);
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.about-text {
+    color: white;
+    font-family: 'Lucida Console', monospace;
+    padding: 10px;
+    white-space: pre-line;
+}
+
+.title1 {
+    color: white;
+    font-family: 'Lucida Console', monospace;
+    padding-left:10px;
+    padding-right: 10px;
+}
+
+/* To Do */
+
+.todo-window {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(208, 221, 91, 0.9);
+    white-space: pre-line;
+    overflow-x: hidden;
+    height: 300px;
+}
+
+.todo-list{
+    font-family: 'Lucida Console', monospace;
+    justify-content: center;
+
+}
 
 /* Taskbar */
 
