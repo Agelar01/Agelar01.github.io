@@ -243,6 +243,9 @@ span {
     height: 70px;
     background-color: rgba(78, 25, 83, 0.9);
     border: solid, 0.1px, white;
+    font-family: 'Lucida Console', monospace;
+    font-size: 70%;
+    color: white;
 }
 
 /* Caculator */

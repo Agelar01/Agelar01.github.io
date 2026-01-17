@@ -347,6 +347,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (programGiven == "Browser") {
       guideId = null;
       btnsContainerId = null;
+      wasButton = false;
+      listOfSites = [];
+      actualPage = 0;
+      pageLeapSave = 0;
       const browser = document.getElementById(windowDiv.id);
       browser.className = "browser";
       browser.style.zIndex = "" + (zIndexCounter + 1);
@@ -367,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { id: "reload", className: "fa-solid fa-rotate-left fa" },
       ];
 
-      navBtns.forEach(({ id, className }) => {
+      navBtns.forEach(({ id, className }, index) => {
         const nbtn = document.createElement("div");
         const nIcon = document.createElement("i");
         nbtn.id = "navBtn" + id + givenId;
@@ -394,7 +398,26 @@ document.addEventListener("DOMContentLoaded", () => {
         btnContainer.appendChild(nbtn);
 
         // Nav buttons functions
-
+        switch (navBtns[index].id) {
+          case "backward":
+            nbtn.onclick = () => {
+              if (actualPage > 0 ) {
+                actualPage--;
+                wasButton = true;
+                webSearch(listOfSites[actualPage]);
+              }
+            }
+            break;
+          case "forward":
+            nbtn.onclick = () => {
+              if (actualPage < listOfSites.length-1) {
+                actualPage++;
+                wasButton = true;
+                webSearch(listOfSites[actualPage]);
+              }
+            }
+            break;
+        }
 
       });
 
@@ -424,32 +447,39 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       function webSearch(rawInput) {
+        actualSite = rawInput ?? adressBar.value.trim();
+
         let input = rawInput ?? adressBar.value.trim();
+        if (!wasButton && actualSite != "") {
+          listOfSites = listOfSites.slice(0, actualPage + 1);
+          listOfSites.push(actualSite);
+          actualPage = listOfSites.length-1;
+        }
+        wasButton = false;
+        console.log(actualPage);
+        console.log(listOfSites);
 
-          if (!input) {
-            fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://wikipedia.org')}`)
-              .then(response => {
-                if (response.ok) return response.json()
-                throw new Error('Network response was not ok.')
-              })
-              .then(data => webContent.src = data);
+        if (!input) {
+          fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://wikipedia.org')}`)
+            .then(response => {
+              if (response.ok) return response.json()
+              throw new Error('Network response was not ok.')
+            })
+            .then(data => webContent.src = data);
+        }
+
+        const isProbablyUrl = input.startsWith("https://") || input.includes(".");
+
+        if (isProbablyUrl) {
+          if (!input.startsWith("https://")) {
+            input = "https://" + input;
           }
-
-          const isProbablyUrl = input.startsWith("https://") || input.includes(".");
-
-          if (isProbablyUrl) {
-            if (!input.startsWith("https://")) {
-              input = "https://" + input;
-            }
-            webContent.src = input;
-          } else {
-            const searchQuery = encodeURIComponent(input);
-            webContent.src = `https://www.google.com/search?q=${searchQuery}`;
-          }
-          const guide = document.getElementById(guideId);
-          if(guide != null){guide.remove();};
-          const pageBtns = document.getElementById(btnsContainerId);
-          if (pageBtns != null){pageBtns.remove()};
+          webContent.src = input;
+        }
+        const guide = document.getElementById(guideId);
+        if (guide != null) { guide.remove(); };
+        const pageBtns = document.getElementById(btnsContainerId);
+        if (pageBtns != null) { pageBtns.remove() };
       }
 
       searchBar.appendChild(searchIcon);
@@ -505,15 +535,15 @@ document.addEventListener("DOMContentLoaded", () => {
       btnsContainerId = btnsContainer.id;
       btnsContainer.classList.add("browser-pages-container");
       browser.appendChild(btnsContainer);
-      const listOfBtns = ["frog-os", "wikipedia","mythicspoiler"];
-      const listOfWebs = ["https://agelar01.github.io/","wikipedia.org","mythicspoiler.com"]
-      listOfBtns.forEach((btn,index) => {
+      const listOfBtns = ["Frog-Os", "Wikipedia", "Mythic\nspoiler"];
+      const listOfWebs = ["https://agelar01.github.io/", "wikipedia.org", "mythicspoiler.com"]
+      listOfBtns.forEach((btn, index) => {
         const browserBtn = document.createElement("button");
         browserBtn.id = btn;
         browserBtn.classList.add("browser-btn");
         btnsContainer.appendChild(browserBtn);
+        browserBtn.textContent = listOfBtns[index];
         browserBtn.onclick = () => {
-          console.log(listOfWebs[index]);
           webSearch(listOfWebs[index]);
         }
       });
@@ -746,7 +776,7 @@ document.addEventListener("DOMContentLoaded", () => {
           borderStyle: "none",
           outline: "none",
           fontSize: "inherit",
-         
+
 
         });
 
@@ -787,7 +817,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const bannedWords = [
                   "sex", "sexual", "penis", "vagina", "porn",
                   "orgasm", "masturb", "fetish", "nude",
-                  "fuck", "shit", "asshole","eyaculation","inseminate"
+                  "fuck", "shit", "asshole", "eyaculation", "inseminate"
                 ];
 
 
@@ -813,8 +843,8 @@ document.addEventListener("DOMContentLoaded", () => {
               default:
                 createParagraph(`user@FrogOs:~$ ${comando}`);
                 createParagraph(`bash: ${comando}: command not found`);
-                
-                //refresh();
+
+              //refresh();
 
             }
           }
