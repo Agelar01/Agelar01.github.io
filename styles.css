@@ -215,6 +215,36 @@ span {
 
 }
 
+.guide-container {
+    display: flex;
+}
+
+.guide-text {
+    color: white;
+    font-family: 'Lucida Console', monospace;
+    padding: 15px;
+    white-space: pre-line;
+
+}
+
+.browser-pages-container {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    height: 10%;
+    width: inherit;
+    justify-content: space-around;
+}
+
+.browser-btn {
+    margin: 0;
+    padding: 0;
+    width: 70px;
+    height: 70px;
+    background-color: rgba(78, 25, 83, 0.9);
+    border: solid, 0.1px, white;
+}
+
 /* Caculator */
 
 .calculator-main-container {
@@ -284,7 +314,7 @@ span {
     border-radius: 20px;
     box-sizing: border-box;
     resize: both;
-    overflow: hidden;
+    overflow-x: hidden;
     flex-direction: column;
 }
 
@@ -295,6 +325,7 @@ span {
     display: flex;
     flex-direction: column;
     overflow-x: hidden;
+
 }
 
 .about-text {
@@ -319,13 +350,18 @@ span {
     background-color: rgba(208, 221, 91, 0.9);
     white-space: pre-line;
     overflow-x: hidden;
-    height: 300px;
+    height: 400px;
+
 }
 
 .todo-list{
     font-family: 'Lucida Console', monospace;
     justify-content: center;
 
+}
+
+li {
+    padding: 5px;
 }
 
 /* Taskbar */

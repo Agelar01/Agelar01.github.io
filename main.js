@@ -70,11 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const icons = [
     { id: "browser", text: "Browser", className: "fa-solid fa-globe fa" },
-    { id: "game", text: "Game", className: "fa-solid fa-gamepad fa" },
+    //{ id: "game", text: "Game", className: "fa-solid fa-gamepad fa" },
     { id: "terminal", text: "Terminal", className: "fa-solid fa-terminal fa" },
     { id: "calculator", text: "Maths", className: "fa-solid fa-calculator fa" },
     { id: "about", text: "About", className: "fa-solid fa-frog fa" },
-    { id: "to-do", text: "To Do", className: "fa-solid fa-list-alt fa" }
+    { id: "to-do", text: "To do", className: "fa-solid fa-list-alt fa" }
   ];
 
   icons.forEach(({ id, text, className }) => {
@@ -345,7 +345,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Browser
 
     if (programGiven == "Browser") {
-
+      guideId = null;
+      btnsContainerId = null;
       const browser = document.getElementById(windowDiv.id);
       browser.className = "browser";
       browser.style.zIndex = "" + (zIndexCounter + 1);
@@ -418,7 +419,12 @@ document.addEventListener("DOMContentLoaded", () => {
       adressBar.placeholder = "https://...";
       adressBar.addEventListener("keydown", (e) => {
         if (e.key === "Enter") {
-          let input = adressBar.value.trim();
+          webSearch();
+        }
+      });
+
+      function webSearch(rawInput) {
+        let input = rawInput ?? adressBar.value.trim();
 
           if (!input) {
             fetch(`https://api.allorigins.win/get?url=${encodeURIComponent('https://wikipedia.org')}`)
@@ -440,9 +446,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const searchQuery = encodeURIComponent(input);
             webContent.src = `https://www.google.com/search?q=${searchQuery}`;
           }
-        }
-      });
-
+          const guide = document.getElementById(guideId);
+          if(guide != null){guide.remove();};
+          const pageBtns = document.getElementById(btnsContainerId);
+          if (pageBtns != null){pageBtns.remove()};
+      }
 
       searchBar.appendChild(searchIcon);
       searchBar.appendChild(adressBar);
@@ -472,8 +480,46 @@ document.addEventListener("DOMContentLoaded", () => {
         const iconSelected = document.getElementById(goBtnContainer.id);
         iconSelected.style.boxShadow = "none";
       }
+      goBtnContainer.onclick = () => {
+        webSearch();
+      }
       goBtnContainer.appendChild(goBtn);
       searchBar.appendChild(goBtnContainer);
+
+      // How to use the browser
+
+      const guideContainer = document.createElement("div");
+      guideContainer.id = "guide" + windowDiv.id;
+      guideId = guideContainer.id;
+      const guideText = document.createElement("p");
+      guideContainer.classList.add("guide-container");
+      guideText.classList.add("guide-text");
+      guideText.textContent = "Some websites may not load here. \n \n \
+                                These sites have been tested and work well:";
+      browser.appendChild(guideContainer);
+      guideContainer.appendChild(guideText);
+
+      // Web access buttons
+      const btnsContainer = document.createElement("div");
+      btnsContainer.id = windowDiv.id + "web-btns";
+      btnsContainerId = btnsContainer.id;
+      btnsContainer.classList.add("browser-pages-container");
+      browser.appendChild(btnsContainer);
+      const listOfBtns = ["frog-os", "wikipedia","mythicspoiler"];
+      const listOfWebs = ["https://agelar01.github.io/","wikipedia.org","mythicspoiler.com"]
+      listOfBtns.forEach((btn,index) => {
+        const browserBtn = document.createElement("button");
+        browserBtn.id = btn;
+        browserBtn.classList.add("browser-btn");
+        btnsContainer.appendChild(browserBtn);
+        browserBtn.onclick = () => {
+          console.log(listOfWebs[index]);
+          webSearch(listOfWebs[index]);
+        }
+      });
+
+
+
 
       // Iframe
 
@@ -484,7 +530,7 @@ document.addEventListener("DOMContentLoaded", () => {
         flexGrow: "1"
       });
 
-      
+
 
       browser.appendChild(webContent);
 
@@ -646,6 +692,7 @@ document.addEventListener("DOMContentLoaded", () => {
       paragraphList = [];
       paraOnScreen = [];
       inputPointer = null;
+      inputId = null;
       inputExists = false;
       const container = document.getElementById(windowDiv.id);
       container.classList.add("terminal-window");
@@ -667,12 +714,10 @@ document.addEventListener("DOMContentLoaded", () => {
         paraOnScreen.push(textContent);
         paragraphList.push(paragraph.id);
         container.appendChild(paragraph);
-        if (inputExists == false) createInput();
-        else {
-          const input = document.getElementById(inputPointer);
-          input.remove();
-          createInput();
-        }
+        const input = document.getElementById(inputPointer);
+        container.appendChild(input);
+        const inputFocus = document.getElementById(inputId);
+        inputFocus.focus();
 
 
       }
@@ -686,6 +731,7 @@ document.addEventListener("DOMContentLoaded", () => {
           color: "white",
           fontFamily: "'Lucida Console', monospace",
           margin: "5px",
+          justifySelf: "end"
         });
         inputContainer.id = "input" + windowDiv.id;
         inputPointer = inputContainer.id;
@@ -699,64 +745,84 @@ document.addEventListener("DOMContentLoaded", () => {
           background: "transparent",
           borderStyle: "none",
           outline: "none",
-          fontSize: "inherit"
+          fontSize: "inherit",
+         
 
         });
 
-
         // Listening to commands or printing text
-        input.id = "input" + windowDiv.id;
+        input.id = "pointer" + windowDiv.id;
+        inputId = input.id;
         input.addEventListener("keydown", (event) => {
           if (event.key === "Enter") {
             const comando = event.target.value.trim();
             event.target.value = "";
 
             switch (comando) {
-              case "game":
-                createWindow(windowIdCounter, "Game");
-                refresh();
+              case "calculator":
+                createWindow(windowIdCounter, "Maths");
+                createParagraph(`user@FrogOs:~$ ${comando}`);
                 break;
 
+              case "browser":
+                createParagraph(`user@FrogOs:~$ ${comando}`);
+                createWindow(windowIdCounter, "Browser")
+                break;
               case "clear":
                 if (paragraphList.length > 0) {
-                  paragraphList.forEach(line => {
-                    const toDelete = document.getElementById(line);
-                    paraOnScreen = [];
-                    paragraphList.pop(line);
-                    toDelete.remove();
+                  paragraphList.forEach(id => {
+                    document.getElementById(id)?.remove();
                   });
+                  paragraphList = [];
+                  paraOnScreen = [];
                 }
                 break;
 
               case "help":
-                createParagraph("List of commands: game, clear, help");
-                refresh();
+                createParagraph(`user@FrogOs:~$ ${comando}`);
+                createParagraph("List of commands: curiosity,calculator,browser,clear, help");
                 break;
+              case "curiosity":
+                createParagraph(`user@FrogOs:~$ ${comando}`);
+                const bannedWords = [
+                  "sex", "sexual", "penis", "vagina", "porn",
+                  "orgasm", "masturb", "fetish", "nude",
+                  "fuck", "shit", "asshole","eyaculation","inseminate"
+                ];
 
+
+                function isSafe(text) {
+                  const lower = text.toLowerCase();
+                  return !bannedWords.some(word => lower.includes(word));
+                }
+                async function curiosityCommand() {
+                  for (let i = 0; i < 5; i++) { // intentos
+                    const res = await fetch(
+                      "https://uselessfacts.jsph.pl/random.json?language=en"
+                    );
+                    const data = await res.json();
+
+                    if (isSafe(data.text)) {
+                      createParagraph(data.text);
+                      return;
+                    }
+                  }
+                }
+                curiosityCommand();
+                break;
               default:
-                createParagraph(`user@FrogOs:~$${comando}`);
-                refresh();
+                createParagraph(`user@FrogOs:~$ ${comando}`);
+                createParagraph(`bash: ${comando}: command not found`);
+                
+                //refresh();
+
             }
           }
         });
         inputContainer.appendChild(input);
       }
 
-      function refresh() {
-        list = paragraphList;
-        if (list.length > 0) {
-          list.forEach(line => {
-            const toDelete = document.getElementById(line);
-            toDelete.remove();
-          });
-          paragraphList = [];
-        }
-        onScreen = paraOnScreen;
-        onScreen.forEach(line => {
-          createParagraph(line);
-        });
-        paraOnScreen = onScreen;
-      }
+      createInput();
       createParagraph("Type 'help' for a list of commands");
     }
     // About
@@ -774,24 +840,38 @@ document.addEventListener("DOMContentLoaded", () => {
       title2.classList.add("title1");
       const text2 = document.createElement("p");
       text2.classList.add("about-text");
-      text2.textContent = "My name is Antú Eyaralar, im a former Computer Science student, im passionate about learning and solving problems.";
-      text1.textContent = "Hi! Welcome to my portfolio. FrogOs is a little proyect i made inspired in my Linux desktop in order to put in practice some basics of HTML,CSS and JavaScript and thats the main reason why i avoided using frameworks.\n As you can see its a work in progress and its full of things to fix, feel free to let me know of any bugs and things to improve!";
+      text2.textContent =
+        "My name is Antú Eyaralar. I have a little background in Computer Science \n\
+        and a strong curiosity about how things work.";
+
+      text1.textContent =
+        "FrogOS is a desktop-like interface built to explore HTML, CSS, and JavaScript.\n\
+          It's an ongoing work in progress.";
+
       about.appendChild(title1);
       about.appendChild(text1);
       about.appendChild(title2);
       about.appendChild(text2);
-
+      //about.transition = "transform(-150,-60)";
     }
 
     //To Do
 
-    if (programGiven == "To Do") {
+    if (programGiven == "To do") {
       const toDo = document.getElementById(windowDiv.id);
       toDo.classList.add("todo-window");
       const list = document.createElement("ul");
       list.classList.add("todo-list");
-      const items = ["Make a functional 'To do' list", "Fix right click interactions and add customizable ui",
-       "Fix browser buttons","Add keyboard to the Calculator","Add wallpapers", "Add videogame"];
+      const items = [
+        "Design an awesome site✅",
+        "Go to the grocery store✅",
+        "Make the To-Do list actually do something",
+        "Tame the right-click menu (and make it customizable)",
+        "Convince the browser buttons to behave",
+        "Teach the calculator how to use a keyboard",
+        "Add more wallpapers (because why not)",
+        "Add a videogame (ambitious, maybe)"
+      ];
 
       items.forEach(text => {
         const li = document.createElement("li");
