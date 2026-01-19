@@ -348,9 +348,11 @@ document.addEventListener("DOMContentLoaded", () => {
       guideId = null;
       btnsContainerId = null;
       wasButton = false;
+      actualWeb = null;
       listOfSites = [];
       actualPage = 0;
       pageLeapSave = 0;
+      isSamePage = true;
       const browser = document.getElementById(windowDiv.id);
       browser.className = "browser";
       browser.style.zIndex = "" + (zIndexCounter + 1);
@@ -401,19 +403,27 @@ document.addEventListener("DOMContentLoaded", () => {
         switch (navBtns[index].id) {
           case "backward":
             nbtn.onclick = () => {
-              if (actualPage > 0 ) {
+              if (actualPage > 0 && isSamePage == false) {
                 actualPage--;
                 wasButton = true;
                 webSearch(listOfSites[actualPage]);
+              }
+              else {
+                const iframe = document.getElementById(givenId+"iframe");
+                iframe.contentWindow.history.back();
               }
             }
             break;
           case "forward":
             nbtn.onclick = () => {
-              if (actualPage < listOfSites.length-1) {
+              if (actualPage < listOfSites.length - 1 && isSamePage == false) {
                 actualPage++;
                 wasButton = true;
                 webSearch(listOfSites[actualPage]);
+              }
+              else {
+                const iframe = document.getElementById(givenId+"iframe");
+                iframe.contentWindow.history.forward();
               }
             }
             break;
@@ -453,7 +463,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!wasButton && actualSite != "") {
           listOfSites = listOfSites.slice(0, actualPage + 1);
           listOfSites.push(actualSite);
-          actualPage = listOfSites.length-1;
+          actualPage = listOfSites.length - 1;
         }
         wasButton = false;
         console.log(actualPage);
@@ -548,17 +558,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-
-
-
       // Iframe
 
       const webContent = document.createElement("iframe");
+      webContent.id = givenId + "iframe";
       Object.assign(webContent.style, {
         border: "none",
         width: "100%",
         flexGrow: "1"
       });
+      webContent.addEventListener("load", () => {
+        const current = webContent.src;
+        if(actualWeb != current){
+          isSamePage = false;
+          actualWeb = current;
+        }
+        else {
+          isSamePage = false;
+        } 
+        console.log(current);
+      });
+      
 
 
 
